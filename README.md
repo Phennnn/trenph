@@ -12,4 +12,4 @@ Tren-PH is a predictive analytics system that uses machine learning to forecast 
 - **db/** : Database schema & seed data
 
 ## Authors
-Team Tren-PH
+Softie
