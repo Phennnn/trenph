@@ -75,3 +75,7 @@ cd frontend
 npm install
 npm start
 ```
+
+### Authors
+
+Softie
