@@ -2,13 +2,13 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        primary: "#2563eb", // Tren-PH blue
-        secondary: "#1e3a8a", // Darker blue
+        'rush-blue': '#1E40AF',
+        'rush-black': '#1F2937',
       },
     },
   },
