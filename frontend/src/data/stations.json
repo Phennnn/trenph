@@ -1,0 +1,87 @@
+{
+  "LRT-1": {
+    "name": "LRT Line 1",
+    "stations": [
+      "Fernando Poe Jr.",
+      "Balintawak",
+      "Monumento",
+      "5th Avenue",
+      "R. Papa",
+      "Abad Santos",
+      "Blumentritt",
+      "Tayuman",
+      "Bambang",
+      "Doroteo Jose",
+      "Carriedo",
+      "Central Terminal",
+      "United Nations",
+      "Pedro Gil",
+      "Quirino",
+      "Vito Cruz",
+      "Gil Puyat",
+      "Libertad",
+      "EDSA",
+      "Baclaran"
+    ]
+  },
+  "LRT-2": {
+    "name": "LRT Line 2",
+    "stations": [
+      "Antipolo",
+      "Marikina-Pasig",
+      "Santolan",
+      "Katipunan",
+      "Anonas",
+      "Cubao",
+      "Betty Go-Belmonte",
+      "J. Ruiz",
+      "V. Mapa",
+      "Pureza",
+      "Legarda",
+      "Recto"
+    ]
+  },
+  "MRT-3": {
+    "name": "MRT Line 3",
+    "stations": [
+      "North Avenue",
+      "Quezon Avenue",
+      "Kamuning",
+      "Cubao",
+      "Santolan-Annapolis",
+      "Ortigas",
+      "Shaw Boulevard",
+      "Boni",
+      "Guadalupe",
+      "Buendia",
+      "Ayala",
+      "Magallanes",
+      "Taft Avenue"
+    ]
+  },
+  "PNR": {
+    "name": "PNR Metro Commuter Line",
+    "stations": [
+      "Governor Pascual",
+      "Caloocan",
+      "Solis",
+      "Tutuban",
+      "Blumentritt",
+      "Laon Laan",
+      "España",
+      "Santa Mesa",
+      "Pandacan",
+      "Paco",
+      "San Andres",
+      "Vito Cruz",
+      "Dela Rosa",
+      "Pasay Road",
+      "EDSA",
+      "Nichols",
+      "FTI",
+      "Bicutan",
+      "Sucat",
+      "Alabang"
+    ]
+  }
+}

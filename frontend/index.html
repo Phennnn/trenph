@@ -2,8 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tren-PH Frontend</title>
+    <title>Tren-PH</title>
+
+    <!-- Leaflet CSS - Required for map styling -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- We add the 'defer' attribute to ensure these scripts execute in order
+         before our main application script runs. -->
+
+    <!-- Leaflet JS -->
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- React-Leaflet JS -->
+    <script
+      defer
+      src="https://unpkg.com/react-leaflet/umd/react-leaflet.min.js"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
