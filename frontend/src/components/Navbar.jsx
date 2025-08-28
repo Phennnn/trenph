@@ -1,16 +1,36 @@
-export default function Navbar() {
+import React from 'react';
+
+/**
+ * A clean, modern navigation bar for the application.
+ * Inspired by the design of rush-ph.com.
+ */
+function Navbar() {
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <h1 className="text-xl font-bold text-primary">🚄 Tren-PH</h1>
-          <div className="space-x-6">
-            <a href="#" className="text-gray-700 hover:text-primary">Home</a>
-            <a href="#" className="text-gray-700 hover:text-primary">Predict</a>
-            <a href="#" className="text-gray-700 hover:text-primary">About</a>
+    <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex-shrink-0">
+            <a href="/" className="text-2xl font-bold text-gray-800">
+              Tren-PH
+            </a>
+          </div>
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-4">
+              <a href="#" className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
+                Home
+              </a>
+              <a href="#" className="text-gray-500 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                Map
+              </a>
+              <a href="#" className="text-gray-500 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                Settings
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
+
+export default Navbar;

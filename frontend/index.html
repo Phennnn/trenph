@@ -14,8 +14,10 @@
       crossorigin=""
     />
 
-    <!-- We add the 'defer' attribute to ensure these scripts execute in order
-         before our main application script runs. -->
+    <!-- We add the 'defer' attribute to ensure scripts execute in order before our main application -->
+  </head>
+  <body>
+    <div id="root"></div>
 
     <!-- Leaflet JS -->
     <script
@@ -25,14 +27,7 @@
       crossorigin=""
     ></script>
 
-    <!-- React-Leaflet JS -->
-    <script
-      defer
-      src="https://unpkg.com/react-leaflet/umd/react-leaflet.min.js"
-    ></script>
-  </head>
-  <body>
-    <div id="root"></div>
+    <!-- React application -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

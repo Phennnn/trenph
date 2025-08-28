@@ -65,7 +65,7 @@ function StationSelector({ selectedLine, onLineChange }) {
             ))}
           </select>
         </div>
-      )}
+      )}S
 
       {selectedLine && selectedStation && (
         <div className="mt-4 p-3 bg-gray-100 rounded-lg text-center">
