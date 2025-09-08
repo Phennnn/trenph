@@ -13,7 +13,6 @@ import {
   Mail,
   MapPin,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 
@@ -77,9 +76,9 @@ export default function Homepage() {
           </nav>
 
           {/* CTA Button */}
-          <Button asChild className="hidden md:flex bg-indigo-600 hover:bg-indigo-700">
-            <Link to="/get-started">Get Started</Link>
-          </Button>
+          <Link to="/planner" className="hidden md:flex items-center justify-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition-colors">
+            Get Started
+          </Link>
 
           {/* Mobile Menu Button */}
           <button
@@ -104,9 +103,9 @@ export default function Homepage() {
                   {link.name}
                 </Link>
               ))}
-              <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
-                <Link to="/get-started">Get Started</Link>
-              </Button>
+              <Link to="/planner" className="flex items-center justify-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition-colors">
+                Get Started
+              </Link>
             </nav>
           </div>
         )}
@@ -128,11 +127,9 @@ export default function Homepage() {
             Elevate your experience with our cutting-edge platform designed for speed,
             security, and innovation. TrenPH is here to set new standards.
           </p>
-          <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
-            <Link to="/get-started" className="flex items-center gap-2">
-              Get Started <ArrowRight size={18} />
-            </Link>
-          </Button>
+          <Link to="/planner" className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+            Get Started <ArrowRight size={18} />
+          </Link>
         </motion.div>
 
         {/* Hero Image */}
@@ -212,3 +209,4 @@ export default function Homepage() {
     </div>
   );
 }
+

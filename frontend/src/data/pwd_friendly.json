@@ -1,0 +1,49 @@
+{
+    "LRT-1": [
+        "Fernando Poe Jr.",
+        "Balintawak",
+        "Monumento",
+        "5th Avenue",
+        "R. Papa",
+        "Abad Santos",
+        "Blumentritt",
+        "Tayuman",
+        "Bambang",
+        "Doroteo Jose",
+        "Carriedo",
+        "Central Terminal",
+        "United Nations",
+        "Pedro Gil",
+        "Quirino",
+        "Vito Cruz",
+        "Gil Puyat",
+        "Libertad",
+        "EDSA",
+        "Baclaran"
+    ],
+    "LRT-2": [
+        "Antipolo",
+        "Marikina-Pasig",
+        "Santolan",
+        "Katipunan",
+        "Anonas",
+        "Cubao",
+        "Betty Go-Belmonte",
+        "J. Ruiz",
+        "V. Mapa",
+        "Pureza",
+        "Legarda",
+        "Recto"
+    ],
+    "MRT-3": [
+        "North Avenue",
+        "Taft Avenue",
+        "Ayala",
+        "Shaw Boulevard",
+        "Cubao"
+    ],
+    "PNR": [
+        "Tutuban"
+    ]
+}
+

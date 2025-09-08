@@ -1,0 +1,42 @@
+{
+    "LRT-1": {
+        "Doroteo Jose": {
+            "line": "LRT-2",
+            "station": "Recto"
+        },
+        "Blumentritt": {
+            "line": "PNR",
+            "station": "Blumentritt"
+        },
+        "EDSA": {
+            "line": "MRT-3",
+            "station": "Taft Avenue"
+        }
+    },
+    "LRT-2": {
+        "Recto": {
+            "line": "LRT-1",
+            "station": "Doroteo Jose"
+        },
+        "Cubao": {
+            "line": "MRT-3",
+            "station": "Cubao"
+        }
+    },
+    "MRT-3": {
+        "Taft Avenue": {
+            "line": "LRT-1",
+            "station": "EDSA"
+        },
+        "Cubao": {
+            "line": "LRT-2",
+            "station": "Cubao"
+        }
+    },
+    "PNR": {
+        "Blumentritt": {
+            "line": "LRT-1",
+            "station": "Blumentritt"
+        }
+    }
+}
