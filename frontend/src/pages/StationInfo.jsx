@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTransitData } from '../context/DataContext';
 import { MapPin, Phone, Clock as ClockIcon, Accessibility, ShoppingBag, Ticket, Wifi, UtensilsCrossed, ParkingCircle, UserCheck, BedDouble, Info } from 'lucide-react';
-import MapView from '../components/MapView';
+import { FaTrain, FaLandmark } from 'react-icons/fa'; // For icon map
 
-// Helper to map icon names to components
+// Helper to map icon names from JSON to actual components
 const iconMap = {
     ShoppingBag: <ShoppingBag size={20} />,
     Ticket: <Ticket size={20} />,
@@ -15,31 +15,36 @@ const iconMap = {
     UserCheck: <UserCheck size={20} />,
     BedDouble: <BedDouble size={20} />,
     Info: <Info size={20} />,
-    FaTrain: <MapPin size={20}/>, // Placeholder
-    FaLandmark: <MapPin size={20}/> // Placeholder
+    FaTrain: <FaTrain size={20}/>,
+    FaLandmark: <FaLandmark size={20}/>
 };
 
-
 export default function StationInfo() {
-  const transitData = useTransitData();
+  // 1. Get all the data needed from the context
+  const { stations, stationDetails, operatingHours } = useTransitData();
+  
   const [infoLine, setInfoLine] = useState('LRT-1');
-  
-  // --- FIX 1: SAFELY INITIALIZE STATION STATE ---
-  // We wait for transitData to be available before setting the initial station
-  const [infoStation, setInfoStation] = useState(transitData?.stations?.[infoLine]?.stations[0] || '');
+  const [infoStation, setInfoStation] = useState('');
 
-  const mapRef = useRef(null);
-
-  // This effect ensures that when the line changes, the selected station resets safely
-  React.useEffect(() => {
-    if (transitData?.stations?.[infoLine]?.stations) {
-      setInfoStation(transitData.stations[infoLine].stations[0]);
+  // 2. This effect runs when the component loads or the selected line changes
+  useEffect(() => {
+    // Set the default station for the selected line once data is available
+    if (stations && stations[infoLine]?.stations.length > 0) {
+      setInfoStation(stations[infoLine].stations[0]);
     }
-  }, [infoLine, transitData]);
-
-  // --- FIX 2: GET DETAILS SAFELY ---
-  const details = transitData?.stationDetails?.[infoLine]?.[infoStation];
+  }, [infoLine, stations]);
   
+  // 3. Add a loading guard: If there's no station data yet, don't render the page
+  if (!stations) {
+    return (
+      <div className="flex h-full items-center justify-center p-8">
+        <h2 className="text-lg font-semibold">Loading Station Information...</h2>
+      </div>
+    );
+  }
+
+  const details = stationDetails?.[infoLine]?.[infoStation];
+
   return (
     <main className="max-w-4xl mx-auto p-4">
       <motion.section 
@@ -48,7 +53,7 @@ export default function StationInfo() {
         transition={{ duration: 0.5 }}
       >
         <div className="bg-gradient-to-br from-white/70 to-blue-50/50 backdrop-blur-sm border-white/20 shadow-lg p-6 rounded-lg mb-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Select a Station</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Select Station</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Train Line</label>
@@ -57,9 +62,8 @@ export default function StationInfo() {
                 onChange={(e) => setInfoLine(e.target.value)} 
                 className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 bg-white/50"
               >
-                {/* --- FIX 3: ADD A GUARD BEFORE MAPPING --- */}
-                {transitData?.stations && Object.keys(transitData.stations).map((line) => (
-                  <option key={line} value={line}>{transitData.stations[line].name}</option>
+                {Object.keys(stations).map((line) => (
+                  <option key={line} value={line}>{stations[line].name}</option>
                 ))}
               </select>
             </div>
@@ -70,8 +74,7 @@ export default function StationInfo() {
                 onChange={(e) => setInfoStation(e.target.value)} 
                 className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500 bg-white/50"
               >
-                 {/* --- FIX 4: ADD A GUARD BEFORE MAPPING --- */}
-                {transitData?.stations?.[infoLine]?.stations.map((station) => (
+                {stations[infoLine]?.stations.map((station) => (
                   <option key={station} value={station}>{station}</option>
                 ))}
               </select>
@@ -85,21 +88,21 @@ export default function StationInfo() {
                  <h3 className="text-2xl font-bold text-blue-600 flex items-center gap-2 mb-4"><MapPin size={24} /> {infoStation} Station</h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm mb-4 text-gray-700">
                      <div className="flex items-center gap-3"><MapPin size={18} className="text-gray-500" /><span>{details.address}</span></div>
-                     <div className="flex items-center gap-3"><Phone size={18} className="text-gray-500" /><span>{details.phone}</span></div>
-                     <div className="flex items-center gap-3"><ClockIcon size={18} className="text-gray-500" /><span>{details.hours || transitData?.operatingHours?.[infoLine]}</span></div>
+                     <div className="flex items-center gap-3"><Phone size={18} className="text-gray-500" /><span>{details.phone || 'N/A'}</span></div>
+                     <div className="flex items-center gap-3"><ClockIcon size={18} className="text-gray-500" /><span>{details.hours || operatingHours?.[infoLine]}</span></div>
                  </div>
                  <p className="text-gray-600 text-sm">{details.description}</p>
              </div>
              <div className="bg-gradient-to-br from-white/70 to-blue-50/50 backdrop-blur-sm border-white/20 shadow-lg p-6 rounded-lg">
                 <h4 className="text-xl font-semibold mb-4 text-purple-600">Station Amenities</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {details.amenities.map(amenity => (
+                    {details.amenities?.map(amenity => (
                         <div key={amenity.name} className="p-4 bg-white/50 rounded-lg border border-white/30 flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 {iconMap[amenity.icon] || <Info size={20} />}
                                 <div>
                                     <p className="font-semibold text-gray-800">{amenity.name}</p>
-                                    <p className="text-xs text-gray-500">{amenity.location}</p>
+                                    {amenity.location && <p className="text-xs text-gray-500">{amenity.location}</p>}
                                 </div>
                             </div>
                             {amenity.available && <span className="text-xs font-bold bg-green-200 text-green-800 px-2 py-1 rounded-full">Available</span>}
@@ -118,4 +121,3 @@ export default function StationInfo() {
     </main>
   );
 }
-

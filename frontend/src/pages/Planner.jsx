@@ -5,10 +5,11 @@ import { useAppContext } from '../context/AppContext';
 import { FaTrain, FaRoute, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 import axios from 'axios';
 import MapView from '../components/MapView';
+import MapLegend from '../components/MapLegend';
 
 export default function Planner() {
   const transitData = useTransitData();
-  const { userType } = useAppContext();
+  const { userType, setUserType } = useAppContext();
   
   const [currentTime, setCurrentTime] = useState(new Date());
   const [startLine, setStartLine] = useState('LRT-1');
@@ -19,21 +20,18 @@ export default function Planner() {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Safely initialize stations when data loads
   useEffect(() => {
-    if (transitData && transitData.stations && transitData.stations['LRT-1']) {
+    if (transitData?.stations?.['LRT-1']?.stations) {
       setStartStation(transitData.stations['LRT-1'].stations[0]);
       setDestinationStation(transitData.stations['LRT-1'].stations[1]);
     }
   }, [transitData]);
   
-  // Live clock
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // --- LOGIC RESTORED FROM ORIGINAL App.jsx ---
   const fetchPrediction = async (totalStations) => {
     try {
         const mlData = {
@@ -44,7 +42,7 @@ export default function Planner() {
             weather_idx: 1, 
             crowd_level: 0.5,
         };
-        const response = await axios.post('http://localhost:3000/api/predict', mlData);
+        const response = await axios.post('/api/predict', mlData);
         setPrediction(response.data);
     } catch (error) {
         console.error('Prediction error:', error);
@@ -53,19 +51,19 @@ export default function Planner() {
   };
 
   const calculateFare = (stationsTraveled) => {
-      if (!transitData || !transitData.fareMatrix) return 0;
-      if (stationsTraveled <= 0) return 0;
+      if (!transitData?.fareMatrix || stationsTraveled <= 0) return 0;
       const fareBracket = transitData.fareMatrix[stationsTraveled] || transitData.fareMatrix[19];
       const fareIndex = (userType === 'Regular' || userType === 'Student') ? 0 : 1;
-      return fareBracket[fareIndex];
+      return fareBracket ? fareBracket[fareIndex] : 0;
   };
 
   const getRouteString = (line, start, end) => {
-      if (!transitData || !transitData.stations) return "";
-      const lineStations = transitData.stations[line].stations;
+      if (!transitData?.stations) return "";
+      const lineStations = transitData.stations[line]?.stations;
+      if (!lineStations) return "Invalid line";
       const startIndex = lineStations.indexOf(start);
       const destIndex = lineStations.indexOf(end);
-       if (startIndex === -1 || destIndex === -1) return "Invalid station selection";
+      if (startIndex === -1 || destIndex === -1) return "Invalid station";
       const routeStations = lineStations.slice(Math.min(startIndex, destIndex), Math.max(startIndex, destIndex) + 1);
       if (startIndex > destIndex) routeStations.reverse();
       return routeStations.join(' → ');
@@ -73,16 +71,16 @@ export default function Planner() {
 
   const handleSubmit = (e) => {
       e.preventDefault();
-      if (!transitData) return; // Guard against submission before data is ready
+      if (!transitData) return;
       setLoading(true);
       setPrediction(null);
+      setRouteInfo(null);
 
       if (startLine === destinationLine) {
           const stationsTraveled = Math.abs(transitData.stations[startLine].stations.indexOf(startStation) - transitData.stations[startLine].stations.indexOf(destinationStation));
           if (stationsTraveled === 0) {
               setRouteInfo({ route: "Start and destination cannot be the same.", fare: "N/A" });
-              setLoading(false);
-              return;
+              setLoading(false); return;
           }
           const fare = calculateFare(stationsTraveled);
           const route = getRouteString(startLine, startStation, destinationStation);
@@ -91,8 +89,8 @@ export default function Planner() {
       } else {
           const startInterchanges = transitData.interchanges[startLine];
           let bestRoute = null;
-          if(startInterchanges){
-              for (const interchangeStation of Object.keys(startInterchanges)) {
+          if (startInterchanges) {
+              for (const interchangeStation in startInterchanges) {
                   const connection = startInterchanges[interchangeStation];
                   if (connection.line === destinationLine) {
                       const leg1 = Math.abs(transitData.stations[startLine].stations.indexOf(startStation) - transitData.stations[startLine].stations.indexOf(interchangeStation));
@@ -109,7 +107,7 @@ export default function Planner() {
               setRouteInfo({ route: fullRoute, fare: bestRoute.leg1_fare + bestRoute.leg2_fare });
               fetchPrediction(bestRoute.totalStations);
           } else {
-              setRouteInfo({ route: "No direct transfer route found between these lines.", fare: "N/A" });
+              setRouteInfo({ route: "No direct transfer route found.", fare: "N/A" });
           }
       }
       setLoading(false);
@@ -163,6 +161,14 @@ export default function Planner() {
                 <label className="block text-sm font-medium text-gray-700">Destination Station</label>
                 <select value={destinationStation} onChange={(e) => setDestinationStation(e.target.value)} className="mt-1 block w-full p-3 border border-gray-300 rounded-md">{transitData.stations[destinationLine].stations.map((station) => (<option key={station} value={station}>{station}</option>))}</select>
             </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700">User Type</label>
+                <select value={userType} onChange={(e) => setUserType(e.target.value)} className="mt-1 block w-full p-3 border border-gray-300 rounded-md">
+                    <option value="Regular">Regular</option>
+                    <option value="Student">Student</option>
+                    <option value="PWD">Senior / PWD</option>
+                </select>
+            </div>
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                  <button type="submit" disabled={loading} className="w-full py-3 mt-2 text-lg font-semibold bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400">{loading ? 'Calculating...' : 'Calculate & Predict'}</button>
             </motion.div>
@@ -185,9 +191,9 @@ export default function Planner() {
         <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800"><FaMapMarkerAlt /> <span className="ml-2">Transit Map</span></h2>
         <div className="relative w-full h-[calc(100%-4rem)] rounded-lg overflow-hidden">
           <MapView center={[14.5995, 120.9842]} zoom={12} setupMap={setupPlannerMap} />
+          <MapLegend />
         </div>
       </motion.section>
     </main>
   );
 }
-

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "type": "lrt",
+    "name": "LRT Line 2",
+    "destination": "Santolan-Annapolis Station",
+    "walkingTime": 0,
+    "frequency": "3-4 mins",
+    "operatingHours": "04:30 - 22:30",
+    "fare": 15,
+    "status": "operating",
+    "route": "Recto - Antipolo",
+    "color": "#00A651"
+  },
+  {
+    "id": "2",
+    "type": "mrt",
+    "name": "MRT Line 3",
+    "destination": "North Avenue Station",
+    "walkingTime": 0,
+    "frequency": "3-5 mins",
+    "operatingHours": "04:30 - 22:30",
+    "fare": 15,
+    "status": "operating",
+    "route": "North Ave - Taft",
+    "color": "#0072BC"
+  },
+  {
+    "id": "3",
+    "type": "bus",
+    "name": "EDSA Carousel",
+    "destination": "Monumento",
+    "walkingTime": 2,
+    "frequency": "2-3 mins",
+    "operatingHours": "24 Hours",
+    "fare": 13,
+    "status": "operating",
+    "route": "Monumento - PITX",
+    "color": "#E74C3C"
+  },
+  {
+    "id": "4",
+    "type": "jeepney",
+    "name": "Modern Jeepney",
+    "destination": "UP Diliman",
+    "walkingTime": 5,
+    "frequency": "4-6 mins",
+    "operatingHours": "05:00 - 21:00",
+    "fare": 13,
+    "status": "operating",
+    "route": "Cubao - UP Campus",
+    "color": "#3498DB"
+  }
+]

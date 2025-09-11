@@ -1,91 +1,141 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTransitData } from '../context/DataContext';
-import { Train } from 'lucide-react';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Polyline, CircleMarker, Popup, Marker, useMap } from 'react-leaflet';
+import { motion } from 'framer-motion';
+import L from 'leaflet';
+
+// A custom component to animate a train along a path
+const AnimatedTrain = ({ line, positions, color }) => {
+  const map = useMap();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [markerPosition, setMarkerPosition] = useState(positions[0]);
+  const markerRef = useRef(null);
+  
+  // Create a custom pulsing icon for the train
+  const trainIcon = L.divIcon({
+    className: 'custom-train-icon',
+    html: `<div style="background-color:${color};" class="pulsing-dot"></div>`,
+    iconSize: [12, 12],
+  });
+
+  useEffect(() => {
+    let animationFrameId;
+    let startTime = Date.now();
+    const duration = 2000; // Time in ms to travel between stations
+
+    const animate = () => {
+      const elapsedTime = Date.now() - startTime;
+      let progress = elapsedTime / duration;
+
+      if (progress < 1) {
+        const startPoint = L.latLng(positions[currentIndex]);
+        const endPoint = L.latLng(positions[currentIndex + 1]);
+        const newPos = L.latLng(
+          startPoint.lat + (endPoint.lat - startPoint.lat) * progress,
+          startPoint.lng + (endPoint.lng - startPoint.lng) * progress
+        );
+        setMarkerPosition(newPos);
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // Move to the next segment of the line
+        const nextIndex = (currentIndex + 1) % (positions.length - 1);
+        setCurrentIndex(nextIndex);
+        startTime = Date.now(); // Reset start time for the new segment
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [currentIndex, positions]);
+  
+  // This effect makes the train marker smoothly pan on the map
+  useEffect(() => {
+    if (markerRef.current) {
+      markerRef.current.setLatLng(markerPosition);
+    }
+  }, [markerPosition]);
+
+  return <Marker ref={markerRef} position={markerPosition} icon={trainIcon} />;
+};
+
 
 export default function LiveMap() {
-  const transitData = useTransitData();
+  const { stations, stationCoords, lineColors } = useTransitData();
 
-  // A guard to ensure data is loaded before rendering
-  if (!transitData?.lineColors) {
-    return (
-        <main className="max-w-7xl mx-auto p-4 text-center">
-            <p>Loading Map Data...</p>
-        </main>
-    );
+  if (!stations || !stationCoords || !lineColors) {
+    return <div className="p-4 text-center">Loading Map Data...</div>;
   }
 
-  // Define SVG paths for each train line in a simplified, stylized way
-  const linePaths = {
-    "LRT-1": "M 50 20 V 480", // Yellow Line (Vertical)
-    "LRT-2": "M 20 250 H 480", // Green Line (Horizontal)
-    "MRT-3": "M 450 20 C 400 150, 400 350, 450 480", // Blue Line (Curved)
-    "PNR": "M 250 20 V 480" // Purple Line (Vertical, Center)
-  };
-  
-  // Define animations for the trains
-  const animations = `
-    @keyframes move-lrt1 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-    @keyframes move-lrt2 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-    @keyframes move-mrt3 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-    @keyframes move-pnr { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
-
-    .train-lrt1 { offset-path: path('${linePaths["LRT-1"]}'); animation: move-lrt1 20s linear infinite; }
-    .train-lrt2 { offset-path: path('${linePaths["LRT-2"]}'); animation: move-lrt2 18s linear infinite reverse; }
-    .train-mrt3 { offset-path: path('${linePaths["MRT-3"]}'); animation: move-mrt3 15s linear infinite; }
-    .train-pnr { offset-path: path('${linePaths["PNR"]}'); animation: move-pnr 30s linear infinite; }
-  `;
+  const mapCenter = [14.5995, 120.9842]; // Metro Manila Center
 
   return (
-    <main className="max-w-5xl mx-auto p-4">
-       <style>{animations}</style>
+    <main className="max-w-7xl mx-auto p-4">
+      {/* Add CSS for the pulsing train icon */}
+      <style>{`
+        .custom-train-icon .pulsing-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 0 5px #333;
+          animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+          70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+      `}</style>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white/80 backdrop-blur-sm border shadow-lg p-6 rounded-lg"
+        className="bg-white p-6 rounded-lg shadow-xl"
       >
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Live Transit Activity</h2>
-        <div className="relative w-full h-[500px] bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
-            <svg width="100%" height="100%" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
-                {/* Draw the train line paths */}
-                <path d={linePaths["LRT-1"]} stroke={transitData.lineColors["LRT-1"]} strokeWidth="4" fill="none" />
-                <path d={linePaths["LRT-2"]} stroke={transitData.lineColors["LRT-2"]} strokeWidth="4" fill="none" />
-                <path d={linePaths["MRT-3"]} stroke={transitData.lineColors["MRT-3"]} strokeWidth="4" fill="none" />
-                <path d={linePaths["PNR"]} stroke={transitData.lineColors["PNR"]} strokeWidth="4" fill="none" />
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Live Transit Map</h2>
+        <div className="h-[75vh] w-full rounded-lg overflow-hidden border">
+          <MapContainer center={mapCenter} zoom={12} style={{ height: '100%', width: '100%' }}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-                {/* Interchange Stations */}
-                <circle cx="50" cy="250" r="6" fill="white" stroke="black" strokeWidth="2" />
-                <circle cx="250" cy="250" r="6" fill="white" stroke="black" strokeWidth="2" />
-                <circle cx="450" cy="250" r="6" fill="white" stroke="black" strokeWidth="2" />
-            </svg>
+            {Object.keys(stations).map(line => {
+              const positions = stations[line].stations
+                .map(station => stationCoords[line]?.[station])
+                .filter(Boolean);
+              
+              if (positions.length < 2) return null;
 
-            {/* Animated Train Icons */}
-            <div className="absolute top-0 left-0 w-full h-full">
-                <div className="train-lrt1 absolute">
-                    <Train size={20} style={{ color: transitData.lineColors["LRT-1"], filter: 'drop-shadow(0 0 2px black)' }} />
-                </div>
-                <div className="train-lrt2 absolute">
-                    <Train size={20} style={{ color: transitData.lineColors["LRT-2"], filter: 'drop-shadow(0 0 2px black)' }} />
-                </div>
-                 <div className="train-mrt3 absolute">
-                    <Train size={20} style={{ color: transitData.lineColors["MRT-3"], filter: 'drop-shadow(0 0 2px black)' }} />
-                </div>
-                <div className="train-pnr absolute" style={{ animationDelay: '-15s' }}>
-                    <Train size={20} style={{ color: transitData.lineColors["PNR"], filter: 'drop-shadow(0 0 2px black)' }} />
-                </div>
-            </div>
-        </div>
-         <div className="flex justify-center flex-wrap gap-4 mt-4">
-            {Object.entries(transitData.lineColors).map(([line, color]) => (
-                <div key={line} className="flex items-center text-sm font-medium">
-                    <span className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: color }}></span>
-                    {transitData.stations[line].name}
-                </div>
-            ))}
+              return (
+                <React.Fragment key={line}>
+                  {/* Draw the static train line */}
+                  <Polyline positions={positions} color={lineColors[line]} weight={4} opacity={0.7} />
+                  
+                  {/* Add an animated train for this line */}
+                  <AnimatedTrain line={line} positions={positions} color={lineColors[line]} />
+                </React.Fragment>
+              );
+            })}
+
+            {/* Draw the station markers */}
+            {Object.keys(stations).map(line => 
+              stations[line].stations.map(station => {
+                const position = stationCoords[line]?.[station];
+                if (!position) return null;
+                return (
+                  <CircleMarker key={`${line}-${station}`} center={position} radius={5} pathOptions={{ color: lineColors[line], fillColor: '#fff', fillOpacity: 1, weight: 2 }}>
+                    <Popup>{station} ({stations[line].name})</Popup>
+                  </CircleMarker>
+                );
+              })
+            )}
+          </MapContainer>
         </div>
       </motion.div>
     </main>
   );
 }
-

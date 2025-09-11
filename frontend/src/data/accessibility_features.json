@@ -1,0 +1,57 @@
+[
+  {
+    "id": "1",
+    "name": "Wheelchair Accessible Platforms",
+    "type": "physical",
+    "location": "All Platforms",
+    "status": "available",
+    "description": "Ramps and elevators provide wheelchair access to all platforms.",
+    "assistanceRequired": false
+  },
+  {
+    "id": "2",
+    "name": "PWD Priority Seating",
+    "type": "physical",
+    "location": "Car 1 & 8 of all trains",
+    "status": "available",
+    "description": "Reserved seating areas for persons with disabilities.",
+    "assistanceRequired": false
+  },
+  {
+    "id": "3",
+    "name": "Elevator Service",
+    "type": "physical",
+    "location": "Main Concourse & Platforms 1-5",
+    "status": "available",
+    "description": "Elevator access between street level and platforms.",
+    "assistanceRequired": false
+  },
+  {
+    "id": "4",
+    "name": "Tactile Paving",
+    "type": "visual",
+    "location": "Platform edges and walkways",
+    "status": "available",
+    "description": "Textured flooring to guide visually impaired passengers.",
+    "assistanceRequired": false
+  },
+  {
+    "id": "5",
+    "name": "Audio & Visual Announcements",
+    "type": "hearing",
+    "location": "Station-wide",
+    "status": "available",
+    "description": "Clear audio/visual alerts for train information.",
+    "assistanceRequired": false
+  },
+  {
+    "id": "9",
+    "name": "Personal Assistance Service",
+    "type": "general",
+    "location": "Customer Service Desk",
+    "status": "available",
+    "description": "Staff assistance for passengers with special needs.",
+    "assistanceRequired": true,
+    "contactInfo": "(02) 8319-0055"
+  }
+]

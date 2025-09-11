@@ -1,0 +1,41 @@
+[
+  {
+    "id": "1",
+    "date": "2025-09-11T18:30:00.000Z",
+    "origin": "Cubao Station",
+    "destination": "Antipolo Station", 
+    "duration": 35,
+    "cost": 15.00,
+    "distance": 12.5,
+    "mode": "LRT2",
+    "transfers": 0,
+    "carbonSaved": 2.8,
+    "status": "completed"
+  },
+  {
+    "id": "2",
+    "date": "2025-09-11T15:30:00.000Z",
+    "origin": "Cubao Station",
+    "destination": "Ayala Station",
+    "duration": 25,
+    "cost": 13.00,
+    "distance": 8.2,
+    "mode": "MRT3",
+    "transfers": 0,
+    "carbonSaved": 1.9,
+    "status": "completed"
+  },
+  {
+    "id": "3",
+    "date": "2025-09-10T20:00:00.000Z",
+    "origin": "Tutuban Station",
+    "destination": "Calamba Station",
+    "duration": 95,
+    "cost": 25.00,
+    "distance": 45.8,
+    "mode": "PNR",
+    "transfers": 0,
+    "carbonSaved": 12.4,
+    "status": "completed"
+  }
+]

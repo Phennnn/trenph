@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1",
+    "name": "National Emergency Hotline",
+    "number": "911",
+    "description": "For any emergency (Police, Fire, Medical)",
+    "available": true
+  },
+  {
+    "id": "2",
+    "name": "PNR Emergency Hotline",
+    "number": "(02) 8319-0043",
+    "description": "Primary contact for railway-specific incidents",
+    "available": true
+  },
+  {
+    "id": "3",
+    "name": "MMDA Metrobase",
+    "number": "136",
+    "description": "For Metro Manila traffic, road incidents, and flood control",
+    "available": true
+  },
+  {
+    "id": "4",
+    "name": "NDRRMC",
+    "number": "(02) 8911-5061",
+    "description": "National Disaster Risk Reduction & Management Council",
+    "available": true
+  },
+  {
+    "id": "5",
+    "name": "Philippine Red Cross",
+    "number": "143",
+    "description": "Medical assistance and disaster response",
+    "available": true
+  },
+  {
+    "id": "6",
+    "name": "Philippine National Police (PNP)",
+    "number": "117",
+    "description": "National police hotline for law enforcement",
+    "available": true
+  },
+  {
+    "id": "7",
+    "name": "Bureau of Fire Protection (BFP)",
+    "number": "(02) 8426-0219",
+    "description": "Fire emergency and rescue services",
+    "available": true
+  },
+  {
+    "id": "8",
+    "name": "NCMH Crisis Hotline",
+    "number": "1553",
+    "description": "National Center for Mental Health support",
+    "available": true
+  }
+]

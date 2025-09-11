@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "Daily Commute",
+    "route": "Cubao → Ayala (MRT3)",
+    "frequency": "12 times this month",
+    "avgTime": "25 min",
+    "avgCost": "₱13.00"
+  },
+  {
+    "id": "2",
+    "name": "Weekend Shopping",
+    "route": "Cubao → SM North (LRT1)",
+    "frequency": "4 times this month",
+    "avgTime": "30 min",
+    "avgCost": "₱15.00"
+  },
+  {
+    "id": "3",
+    "name": "Province Trip",
+    "route": "Tutuban → Calamba (PNR)",
+    "frequency": "2 times this month",
+    "avgTime": "95 min",
+    "avgCost": "₱25.00"
+  }
+]

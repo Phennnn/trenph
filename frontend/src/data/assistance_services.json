@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "service": "Mobility Assistance",
+    "description": "Wheelchair and boarding help",
+    "contact": "(02) 8319-0055"
+  },
+  {
+    "id": "2",
+    "service": "Visual Guidance",
+    "description": "Guide assistance for visually impaired",
+    "contact": "(02) 8319-0055"
+  },
+  {
+    "id": "3",
+    "service": "Sign Language Interpretation",
+    "description": "By appointment only",
+    "contact": "(02) 8319-0055"
+  },
+  {
+    "id": "4",
+    "service": "Medical Assistance",
+    "description": "First aid and emergency support",
+    "contact": "143"
+  },
+  {
+    "id": "5",
+    "service": "Luggage Assistance",
+    "description": "Help with heavy luggage",
+    "contact": "(02) 8319-0055"
+  }
+]

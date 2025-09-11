@@ -1,0 +1,230 @@
+{
+  "LRT-1": {
+    "Baclaran": [
+      {
+        "id": "bac-1",
+        "from": "Main Platform",
+        "to": "Taft Avenue Exit",
+        "direction": "east",
+        "estimatedTime": 2,
+        "capacity": 800,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "bac-2",
+        "from": "Main Platform",
+        "to": "LRT Depot Access",
+        "direction": "south",
+        "estimatedTime": 4,
+        "capacity": 300,
+        "status": "clear",
+        "accessibility": false
+      }
+    ],
+    "EDSA": [
+      {
+        "id": "edsa-1",
+        "from": "Platform 1 (Northbound)",
+        "to": "Main Exit Taft Ave",
+        "direction": "west",
+        "estimatedTime": 2,
+        "capacity": 400,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "edsa-2",
+        "from": "Platform 2 (Southbound)",
+        "to": "MRT-3 Connection Bridge",
+        "direction": "east",
+        "estimatedTime": 3,
+        "capacity": 600,
+        "status": "clear",
+        "accessibility": true
+      }
+    ],
+    "Carriedo": [
+       {
+        "id": "car-1",
+        "from": "Platform",
+        "to": "Plaza Lacson Exit",
+        "direction": "west",
+        "estimatedTime": 3,
+        "capacity": 500,
+        "status": "clear",
+        "accessibility": true
+      }
+    ]
+  },
+  "LRT-2": {
+    "Recto": [
+      {
+        "id": "recto-1",
+        "from": "Main Platform",
+        "to": "LRT-1 Connection Bridge",
+        "direction": "west",
+        "estimatedTime": 4,
+        "capacity": 700,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "recto-2",
+        "from": "Main Platform",
+        "to": "Isetann Mall Exit",
+        "direction": "east",
+        "estimatedTime": 2,
+        "capacity": 500,
+        "status": "clear",
+        "accessibility": true
+      }
+    ],
+    "Cubao": [
+      {
+        "id": "cubao-lrt2-1",
+        "from": "Platform",
+        "to": "Gateway Mall Exit",
+        "direction": "north",
+        "estimatedTime": 3,
+        "capacity": 1000,
+        "status": "clear",
+        "accessibility": true
+      },
+       {
+        "id": "cubao-lrt2-2",
+        "from": "Platform",
+        "to": "MRT-3 Connection",
+        "direction": "south",
+        "estimatedTime": 5,
+        "capacity": 800,
+        "status": "congested",
+        "accessibility": true
+      }
+    ]
+  },
+  "MRT-3": {
+    "North Avenue": [
+      {
+        "id": "north-1",
+        "from": "Platform",
+        "to": "TriNoma Mall Exit",
+        "direction": "west",
+        "estimatedTime": 3,
+        "capacity": 1200,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "north-2",
+        "from": "Platform",
+        "to": "SM North EDSA Exit",
+        "direction": "east",
+        "estimatedTime": 4,
+        "capacity": 1000,
+        "status": "clear",
+        "accessibility": true
+      }
+    ],
+    "Ayala": [
+        {
+        "id": "ayala-1",
+        "from": "Platform",
+        "to": "SM Makati Exit",
+        "direction": "west",
+        "estimatedTime": 2,
+        "capacity": 1500,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "ayala-2",
+        "from": "Platform",
+        "to": "Telus Building Exit",
+        "direction": "east",
+        "estimatedTime": 3,
+        "capacity": 800,
+        "status": "clear",
+        "accessibility": true
+      }
+    ],
+    "Taft Avenue": [
+      {
+        "id": "taft-1",
+        "from": "Platform",
+        "to": "LRT-1 Connection Bridge",
+        "direction": "west",
+        "estimatedTime": 3,
+        "capacity": 700,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "taft-2",
+        "from": "Platform",
+        "to": "Main Exit EDSA",
+        "direction": "east",
+        "estimatedTime": 2,
+        "capacity": 500,
+        "status": "congested",
+        "accessibility": true
+      }
+    ]
+  },
+  "PNR": {
+    "Tutuban": [
+      {
+        "id": "tutu-1",
+        "from": "Platform 1",
+        "to": "Main Exit North",
+        "direction": "north",
+        "estimatedTime": 3,
+        "capacity": 500,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "tutu-2",
+        "from": "Platform 1",
+        "to": "Emergency Exit East",
+        "direction": "east",
+        "estimatedTime": 4,
+        "capacity": 300,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "tutu-3",
+        "from": "Platform 2-3",
+        "to": "Main Exit North",
+        "direction": "north",
+        "estimatedTime": 5,
+        "capacity": 800,
+        "status": "clear",
+        "accessibility": true
+      },
+      {
+        "id": "tutu-4",
+        "from": "Platform 2-3",
+        "to": "Emergency Exit West",
+        "direction": "west",
+        "estimatedTime": 3,
+        "capacity": 400,
+        "status": "clear",
+        "accessibility": false
+      }
+    ],
+     "Alabang": [
+      {
+        "id": "ala-1",
+        "from": "Main Platform",
+        "to": "Starmall Exit",
+        "direction": "south",
+        "estimatedTime": 3,
+        "capacity": 900,
+        "status": "clear",
+        "accessibility": true
+      }
+    ]
+  }
+}

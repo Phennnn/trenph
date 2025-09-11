@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "Street to Platform 1",
+    "from": "Main Street Entrance",
+    "to": "Platform 1",
+    "accessible": true,
+    "features": ["Elevator", "Ramps", "Tactile Paving"],
+    "estimatedTime": 5,
+    "difficulty": "easy"
+  },
+  {
+    "id": "2",
+    "name": "Street to Platform 2-3",
+    "from": "Main Street Entrance",
+    "to": "Platform 2-3",
+    "accessible": true,
+    "features": ["Elevator", "Wide Pathways", "Tactile Paving"],
+    "estimatedTime": 7,
+    "difficulty": "easy"
+  },
+  {
+    "id": "3",
+    "name": "Emergency Exit Route",
+    "from": "Any Platform",
+    "to": "Emergency Assembly Area",
+    "accessible": true,
+    "features": ["Wide Exits", "Emergency Lighting", "Clear Signage"],
+    "estimatedTime": 3,
+    "difficulty": "easy"
+  }
+]

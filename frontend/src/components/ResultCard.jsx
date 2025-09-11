@@ -1,24 +1,17 @@
-export default function ResultCard({ minutes }) {
-  if (minutes == null) return null;
-  return (
-    <div style={styles.card}>
-      <div style={styles.title}>Estimated Travel Time</div>
-      <div style={styles.value}>{Number(minutes).toFixed(2)} mins</div>
-      <div style={styles.sub}>Based on current inputs</div>
-    </div>
-  );
-}
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const styles = {
-  card: {
-    marginTop: 16,
-    padding: 16,
-    background: "#fff",
-    borderRadius: 12,
-    boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
-    border: "1px solid #f3f4f6",
-  },
-  title: { fontSize: 14, color: "#6b7280" },
-  value: { fontSize: 28, fontWeight: 800, color: "#111827", marginTop: 4 },
-  sub: { fontSize: 12, color: "#9ca3af", marginTop: 4 },
+const ResultCard = ({ minutes }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mt-4 p-4 bg-gray-50/90 rounded-lg border text-center"
+    >
+      <h3 className="text-xl font-semibold mb-2 text-gray-800">Predicted Travel Time</h3>
+      <p className="text-2xl font-bold text-purple-600">{minutes || 'N/A'}</p>
+    </motion.div>
+  );
 };
+
+export default ResultCard;

@@ -1,37 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon, Type, Accessibility, Trash2, Info } from 'lucide-react';
-
-// This would typically come from a context to persist the settings
-const useAppSettings = () => {
-  const [theme, setTheme] = useState('light');
-  const [fontSize, setFontSize] = useState('text-base');
-  const [showPwdFriendly, setShowPwdFriendly] = useState(false);
-  const [defaultUserType, setDefaultUserType] = useState('Regular');
-
-  // Dummy functions for demonstration
-  const clearCache = () => {
-    alert("User cache and preferences have been cleared!");
-  };
-
-  return { 
-    theme, setTheme, 
-    fontSize, setFontSize, 
-    showPwdFriendly, setShowPwdFriendly,
-    defaultUserType, setDefaultUserType,
-    clearCache
-  };
-};
-
+import { Sun, Moon, Type, Accessibility, Trash2 } from 'lucide-react';
+import { useAppContext } from '../context/AppContext'; // Assuming you'll use this for settings
 
 export default function Settings() {
-  const { 
-    theme, setTheme, 
-    fontSize, setFontSize, 
-    showPwdFriendly, setShowPwdFriendly,
-    defaultUserType, setDefaultUserType,
-    clearCache
-  } = useAppSettings();
+  // Using useAppContext to manage settings globally
+  const { theme, setTheme, clearCache, showPwdFriendly, setShowPwdFriendly, defaultUserType, setDefaultUserType } = useAppContext();
 
   const handleThemeChange = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -59,14 +33,7 @@ export default function Settings() {
                     Switch to {theme === 'light' ? 'Dark' : 'Light'}
                 </button>
             </div>
-            <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-3"><Type /><label>Font Size</label></div>
-                <div className="flex space-x-2">
-                    <button onClick={() => setFontSize('text-sm')} className={`px-4 py-2 rounded-md border text-sm font-medium ${fontSize === 'text-sm' ? 'bg-purple-600 text-white' : ''}`}>Small</button>
-                    <button onClick={() => setFontSize('text-base')} className={`px-4 py-2 rounded-md border text-sm font-medium ${fontSize === 'text-base' ? 'bg-purple-600 text-white' : ''}`}>Medium</button>
-                    <button onClick={() => setFontSize('text-lg')} className={`px-4 py-2 rounded-md border text-sm font-medium ${fontSize === 'text-lg' ? 'bg-purple-600 text-white' : ''}`}>Large</button>
-                </div>
-            </div>
+            {/* Font size controls can be added here if needed */}
         </div>
 
         {/* --- Accessibility & Preferences --- */}

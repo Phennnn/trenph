@@ -1,13 +1,12 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Map, Compass, Info, Settings, Tv } from 'lucide-react';
+import { Map, Compass, Info, Settings, Tv, AlertTriangle, Route, HelpingHand, History as HistoryIcon } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 export default function Layout() {
   const { theme } = useAppContext();
 
-  // Navigation link styling
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 px-3 py-2 md:px-4 rounded-md border text-xs md:text-sm font-medium transition ${
       isActive
@@ -29,23 +28,32 @@ export default function Layout() {
       </section>
 
       <header className={`shadow-md p-4 flex items-center justify-center relative sticky top-0 z-20 ${theme === 'light' ? 'bg-white' : 'dark bg-gray-800'}`}>
-        <nav className="flex items-center space-x-1 md:space-x-2">
+        <nav className="flex items-center space-x-1 md:space-x-2 flex-wrap justify-center">
             <NavLink to="/" className={navLinkClass}><Map size={16} /> <span className="hidden md:inline">Planner</span></NavLink>
+            <NavLink to="/history" className={navLinkClass}><HistoryIcon size={16} /> <span className="hidden md:inline">History</span></NavLink>
             <NavLink to="/landmarks" className={navLinkClass}><Compass size={16} /> <span className="hidden md:inline">Landmarks</span></NavLink>
             <NavLink to="/station-info" className={navLinkClass}><Info size={16} /> <span className="hidden md:inline">Stations</span></NavLink>
+            <NavLink to="/connections" className={navLinkClass}><Route size={16} /> <span className="hidden md:inline">Connections</span></NavLink>
+            <NavLink to="/accessibility" className={navLinkClass}><HelpingHand size={16} /> <span className="hidden md:inline">Accessibility</span></NavLink>
             <NavLink to="/live-map" className={navLinkClass}><Tv size={16} /> <span className="hidden md:inline">Live Map</span></NavLink>
+            <NavLink to="/emergency" className={navLinkClass}><AlertTriangle size={16} /> <span className="hidden md:inline">Emergency</span></NavLink>
             <NavLink to="/settings" className={navLinkClass}><Settings size={16} /> <span className="hidden md:inline">Settings</span></NavLink>
         </nav>
       </header>
       
-      <main className="relative z-10">
-        <Outlet />
-      </main>
+      <div className="relative">
+        <video autoPlay muted loop className="absolute top-0 left-0 w-full h-full object-cover z-0">
+            <source src="/train-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute top-0 left-0 w-full h-full bg-black/30 z-10"></div>
+        <main className="relative z-20">
+          <Outlet />
+        </main>
+      </div>
 
-      <footer className="bg-gray-800 text-white p-4 mt-6 text-center">
+      <footer className="bg-gray-800 text-white p-4 text-center">
         <p>© 2025 Tren-PH. All rights reserved.</p>
       </footer>
     </div>
   );
 }
-

@@ -1,114 +1,68 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
 
-export default function PredictForm() {
-  const [formData, setFormData] = useState({
-    distance_km: "",
-    hour_of_day: "",
-    day_of_week: "",
-    is_holiday: 0,
-    weather_idx: 1,
-    crowd_level: 0.5,
-  });
+const PredictForm = ({ onSubmit, isLoading }) => {
+  const [isHoliday, setIsHoliday] = useState(false);
+  const [weatherIdx, setWeatherIdx] = useState(1);
+  const [crowdLevel, setCrowdLevel] = useState(0.5);
 
-  const [prediction, setPrediction] = useState(null);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:3000/api/predict", {
-        ...formData,
-        distance_km: parseFloat(formData.distance_km),
-        hour_of_day: parseInt(formData.hour_of_day),
-        day_of_week: parseInt(formData.day_of_week),
-        is_holiday: parseInt(formData.is_holiday),
-        weather_idx: parseInt(formData.weather_idx),
-        crowd_level: parseFloat(formData.crowd_level),
-      });
-      setPrediction(res.data.predicted_travel_time_minutes);
-    } catch (error) {
-      console.error(error);
-      alert("Prediction failed!");
-    }
+    onSubmit({ isHoliday, weatherIdx, crowdLevel });
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 bg-white shadow-lg rounded-xl p-6">
-      <h2 className="text-2xl font-bold text-center text-primary mb-4">
-        Predict Your Travel Time
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="distance_km"
-          type="number"
-          placeholder="Distance in KM"
-          value={formData.distance_km}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <input
-          name="hour_of_day"
-          type="number"
-          placeholder="Hour of Day (0-23)"
-          value={formData.hour_of_day}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <input
-          name="day_of_week"
-          type="number"
-          placeholder="Day of Week (0=Sunday)"
-          value={formData.day_of_week}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <select
-          name="is_holiday"
-          value={formData.is_holiday}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-        >
-          <option value={0}>Not Holiday</option>
-          <option value={1}>Holiday</option>
-        </select>
-        <input
-          name="weather_idx"
-          type="number"
-          placeholder="Weather Index"
-          value={formData.weather_idx}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <input
-          name="crowd_level"
-          type="number"
-          step="0.1"
-          placeholder="Crowd Level (0.0 - 1.0)"
-          value={formData.crowd_level}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gray-50/90 p-4 rounded-lg border"
+    >
+      <h3 className="text-lg font-semibold mb-3 text-gray-800">Trip Options</h3>
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={isHoliday}
+            onChange={() => setIsHoliday(!isHoliday)}
+            className="h-5 w-5"
+          />
+          <label className="text-sm text-gray-700">Is Holiday?</label>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Weather</label>
+          <select
+            value={weatherIdx}
+            onChange={(e) => setWeatherIdx(Number(e.target.value))}
+            className="block w-full px-3 py-2 border rounded-md"
+          >
+            <option value={1}>Clear</option>
+            <option value={2}>Rainy</option>
+            <option value={3}>Stormy</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Crowd Level</label>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={crowdLevel}
+            onChange={(e) => setCrowdLevel(Number(e.target.value))}
+            className="w-full"
+          />
+          <span className="text-sm text-gray-600">{crowdLevel}</span>
+        </div>
         <button
           type="submit"
-          className="bg-primary text-white px-4 py-2 rounded-lg w-full hover:bg-secondary transition"
+          disabled={isLoading}
+          onClick={handleSubmit}
+          className="w-full px-4 py-2 bg-purple-700 text-white rounded-md disabled:bg-gray-400"
         >
-          Predict
+          {isLoading ? 'Calculating...' : 'Calculate & Predict'}
         </button>
-      </form>
-      {prediction && (
-        <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg text-center">
-          <strong>Predicted Travel Time:</strong> {prediction.toFixed(2)} minutes
-        </div>
-      )}
-    </div>
+      </div>
+    </motion.div>
   );
-}
+};
+
+export default PredictForm;
