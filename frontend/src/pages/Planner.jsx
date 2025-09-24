@@ -2,16 +2,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTransitData } from '../context/DataContext';
 import { useAppContext } from '../context/AppContext';
-import { FaTrain, FaRoute, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaTrain, FaRoute, FaClock, FaMapMarkerAlt, FaSun, FaCloudRain, FaWind } from 'react-icons/fa';
 import axios from 'axios';
 import MapView from '../components/MapView';
 import MapLegend from '../components/MapLegend';
+import WeatherWidget from '../components/WeatherWidget';
+import LiveClock from '../components/LiveClock'; // Import the new LiveClock component
 
 export default function Planner() {
   const transitData = useTransitData();
   const { userType, setUserType } = useAppContext();
   
-  const [currentTime, setCurrentTime] = useState(new Date());
+  // The currentTime state and its useEffect have been removed from here
+  
   const [startLine, setStartLine] = useState('LRT-1');
   const [startStation, setStartStation] = useState('');
   const [destinationLine, setDestinationLine] = useState('LRT-1');
@@ -26,27 +29,24 @@ export default function Planner() {
       setDestinationStation(transitData.stations['LRT-1'].stations[1]);
     }
   }, [transitData]);
-  
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
-  const fetchPrediction = async (totalStations) => {
+  const fetchPrediction = async (stationsTraveled, startLine, startStation, endLine, endStation) => {
     try {
         const mlData = {
-            distance_km: totalStations * 1.5,
+            start_line: startLine,
+            start_station: startStation,
+            end_line: endLine,
+            end_station: endStation,
             hour_of_day: new Date().getHours(),
             day_of_week: new Date().getDay(),
-            is_holiday: 0, 
-            weather_idx: 1, 
+            is_holiday: 0,
             crowd_level: 0.5,
         };
         const response = await axios.post('/api/predict', mlData);
         setPrediction(response.data);
     } catch (error) {
         console.error('Prediction error:', error);
-        setPrediction({ eta: 'N/A', status: 'Unavailable', travelTime: 'N/A' });
+        setPrediction({ eta: 'N/A', status: 'Unavailable', travelTime: 'N/A', weather: 'Unknown' });
     }
   };
 
@@ -76,25 +76,30 @@ export default function Planner() {
       setPrediction(null);
       setRouteInfo(null);
 
-      if (startLine === destinationLine) {
-          const stationsTraveled = Math.abs(transitData.stations[startLine].stations.indexOf(startStation) - transitData.stations[startLine].stations.indexOf(destinationStation));
+      const startL = startLine;
+      const startS = startStation;
+      const destL = destinationLine;
+      const destS = destinationStation;
+
+      if (startL === destL) {
+          const stationsTraveled = Math.abs(transitData.stations[startL].stations.indexOf(startS) - transitData.stations[startL].stations.indexOf(destS));
           if (stationsTraveled === 0) {
               setRouteInfo({ route: "Start and destination cannot be the same.", fare: "N/A" });
               setLoading(false); return;
           }
           const fare = calculateFare(stationsTraveled);
-          const route = getRouteString(startLine, startStation, destinationStation);
-          setRouteInfo({ route: `(${transitData.stations[startLine].name}) ${route}`, fare: fare });
-          fetchPrediction(stationsTraveled);
+          const route = getRouteString(startL, startS, destS);
+          setRouteInfo({ route: `(${transitData.stations[startL].name}) ${route}`, fare: fare });
+          fetchPrediction(stationsTraveled, startL, startS, destL, destS);
       } else {
-          const startInterchanges = transitData.interchanges[startLine];
+          const startInterchanges = transitData.interchanges[startL];
           let bestRoute = null;
           if (startInterchanges) {
               for (const interchangeStation in startInterchanges) {
                   const connection = startInterchanges[interchangeStation];
-                  if (connection.line === destinationLine) {
-                      const leg1 = Math.abs(transitData.stations[startLine].stations.indexOf(startStation) - transitData.stations[startLine].stations.indexOf(interchangeStation));
-                      const leg2 = Math.abs(transitData.stations[destinationLine].stations.indexOf(connection.station) - transitData.stations[destinationLine].stations.indexOf(destinationStation));
+                  if (connection.line === destL) {
+                      const leg1 = Math.abs(transitData.stations[startL].stations.indexOf(startS) - transitData.stations[startL].stations.indexOf(interchangeStation));
+                      const leg2 = Math.abs(transitData.stations[destL].stations.indexOf(connection.station) - transitData.stations[destL].stations.indexOf(destS));
                       const total = leg1 + leg2;
                       if (!bestRoute || total < bestRoute.totalStations) {
                           bestRoute = { totalStations: total, interchange: interchangeStation, connection: connection.station, leg1_fare: calculateFare(leg1), leg2_fare: calculateFare(leg2) };
@@ -103,9 +108,9 @@ export default function Planner() {
               }
           }
           if (bestRoute) {
-              const fullRoute = `(${transitData.stations[startLine].name}) ${getRouteString(startLine, startStation, bestRoute.interchange)} \n➡️ TRANSFER AT ${bestRoute.interchange}/${bestRoute.connection} ➡️\n (${transitData.stations[destinationLine].name}) ${getRouteString(destinationLine, bestRoute.connection, destinationStation)}`;
+              const fullRoute = `(${transitData.stations[startL].name}) ${getRouteString(startL, startS, bestRoute.interchange)} \n➡️ TRANSFER AT ${bestRoute.interchange}/${bestRoute.connection} ➡️\n (${transitData.stations[destL].name}) ${getRouteString(destL, bestRoute.connection, destS)}`;
               setRouteInfo({ route: fullRoute, fare: bestRoute.leg1_fare + bestRoute.leg2_fare });
-              fetchPrediction(bestRoute.totalStations);
+              fetchPrediction(bestRoute.totalStations, startL, startS, destL, destS);
           } else {
               setRouteInfo({ route: "No direct transfer route found.", fare: "N/A" });
           }
@@ -123,6 +128,14 @@ export default function Planner() {
     });
   }, [transitData]);
 
+  const getWeatherIcon = (weatherStatus) => {
+      if (!weatherStatus) return <FaSun />;
+      if (weatherStatus.toLowerCase().includes('rain')) return <FaCloudRain />;
+      if (weatherStatus.toLowerCase().includes('storm')) return <FaWind />;
+      return <FaSun />;
+  };
+
+
   if (!transitData?.stations || !transitData.operatingHours || !startStation) {
     return <div className="flex h-full items-center justify-center"><h2>Loading Planner...</h2></div>;
   }
@@ -130,9 +143,9 @@ export default function Planner() {
   return (
     <main className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
       <motion.section initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-xl">
+        <WeatherWidget />
         <div className="p-4 bg-gray-50 rounded-lg border mb-6">
-            <h3 className="text-center text-2xl font-bold text-gray-800">{currentTime.toLocaleTimeString()}</h3>
-            <div className="text-center text-xs text-gray-500">{currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            <LiveClock /> {/* <-- Use the new LiveClock component */}
             <hr className="my-2"/>
             <div className="text-xs text-gray-600 space-y-1">
                 {Object.keys(transitData.operatingHours).map(line => (
@@ -145,6 +158,7 @@ export default function Planner() {
         </div>
         <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800"><FaTrain /> <span className="ml-2">Plan Your Journey</span></h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+            {/* The form remains unchanged */}
             <div>
                 <label className="block text-sm font-medium text-gray-700">Start Line</label>
                 <select value={startLine} onChange={(e) => { setStartLine(e.target.value); setStartStation(transitData.stations[e.target.value].stations[0]); }} className="mt-1 block w-full p-3 border border-gray-300 rounded-md">{Object.keys(transitData.stations).map((line) => (<option key={line} value={line}>{transitData.stations[line].name}</option>))}</select>
@@ -183,7 +197,8 @@ export default function Planner() {
         {prediction && (
              <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-gray-50/90 rounded-lg border">
                 <h3 className="text-xl font-semibold mb-3 flex items-center text-gray-800"><FaClock /> <span className="ml-2">Live Prediction</span></h3>
-                <p><strong>ETA:</strong> {prediction.eta || 'N/A'}</p><p><strong>Status:</strong> {prediction.status || 'Unavailable'}</p><p><strong>Travel Time:</strong> {prediction.travelTime || 'N/A'}</p>
+                <p className="flex items-center gap-2"><strong>Weather:</strong> {getWeatherIcon(prediction.weather)} {prediction.weather || 'Clear'}</p>
+                <p><strong>Travel Time:</strong> {prediction.travelTime || 'N/A'}</p>
             </motion.section>
         )}
       </motion.section>

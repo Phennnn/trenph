@@ -4,3 +4,5 @@ scikit-learn
 joblib
 numpy
 gunicorn
+requests
+holidays

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import WelcomeWeather from '../components/WelcomeWeather'; // Import the new widget
 
 export default function Welcome() {
   const { handleUserTypeSelect } = useAppContext();
@@ -37,10 +38,14 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg md:text-2xl mb-12"
+          className="text-lg md:text-2xl mb-8"
         >
           Please select your passenger type to begin.
         </motion.p>
+        
+        {/* Weather Widget goes here */}
+        <WelcomeWeather />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
           <motion.button
             whileHover={{ scale: 1.05, borderColor: '#fff' }}

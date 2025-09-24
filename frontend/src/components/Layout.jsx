@@ -27,7 +27,8 @@ export default function Layout() {
         </div>
       </section>
 
-      <header className={`shadow-md p-4 flex items-center justify-center relative sticky top-0 z-20 ${theme === 'light' ? 'bg-white' : 'dark bg-gray-800'}`}>
+      {/* The only change is z-20 to z-50 right here 👇 */}
+      <header className={`shadow-md p-4 flex items-center justify-center relative sticky top-0 z-50 ${theme === 'light' ? 'bg-white' : 'dark bg-gray-800'}`}>
         <nav className="flex items-center space-x-1 md:space-x-2 flex-wrap justify-center">
             <NavLink to="/" className={navLinkClass}><Map size={16} /> <span className="hidden md:inline">Planner</span></NavLink>
             <NavLink to="/history" className={navLinkClass}><HistoryIcon size={16} /> <span className="hidden md:inline">History</span></NavLink>

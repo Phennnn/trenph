@@ -1,0 +1,9 @@
+line,station_entry,hour_of_day,riders
+LRT-1,Baclaran,7,4500
+LRT-1,Baclaran,8,5200
+LRT-1,EDSA,8,3800
+MRT-3,North Avenue,7,5500
+MRT-3,Ayala,17,5800
+MRT-3,Ayala,18,5100
+LRT-1,Baclaran,9,2500
+MRT-3,Ayala,19,4800

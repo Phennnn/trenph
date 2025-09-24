@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react'; // Import memo
 import { motion } from 'framer-motion';
 
 const MapView = ({ center = [14.5995, 120.9842], zoom = 12, setupMap }) => {
@@ -8,7 +8,6 @@ const MapView = ({ center = [14.5995, 120.9842], zoom = 12, setupMap }) => {
   useEffect(() => {
     const loadMap = async () => {
       try {
-        // Dynamically load Leaflet
         const L = await import('leaflet');
         await import('leaflet/dist/leaflet.css');
 
@@ -48,4 +47,4 @@ const MapView = ({ center = [14.5995, 120.9842], zoom = 12, setupMap }) => {
   );
 };
 
-export default MapView;
+export default memo(MapView);

@@ -1,0 +1,5 @@
+distance_km,hour_of_day,day_of_week,is_holiday,weather_idx,crowd_level,travel_time_minutes
+5.0,8,0,0,1,0.3,15
+5.0,17,0,0,1,0.5,25
+5.0,9,1,0,1,0.36,20
+5.0,18,2,0,1,0.6,30
