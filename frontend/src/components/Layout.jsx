@@ -1,11 +1,11 @@
 import React from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Map, Compass, Info, Settings, Tv, AlertTriangle, Route, HelpingHand, History as HistoryIcon } from 'lucide-react';
+import { Map, Compass, Info, Settings, Tv, AlertTriangle, Route, HelpingHand, History as HistoryIcon, LogOut, Megaphone } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 export default function Layout() {
-  const { theme } = useAppContext();
+  const { theme, token, logout } = useAppContext();
 
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 px-3 py-2 md:px-4 rounded-md border text-xs md:text-sm font-medium transition ${
@@ -19,21 +19,32 @@ export default function Layout() {
       <section className="relative h-64 overflow-hidden">
         <video autoPlay muted loop className="absolute top-0 left-0 w-full h-full object-cover" src="/gradient-video.mp4" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-blue-900/30"></div>
-        <div className="relative z-10 flex items-center h-full text-white text-center px-4">
+        <div className="relative z-10 flex items-center justify-between h-full text-white text-center px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-2">Tren-PH</h1>
             <p className="text-lg md:text-xl">Navigate Manila’s Rails with Ease</p>
           </div>
         </div>
+        <div className="absolute top-4 right-4 z-20">
+            {token ? (
+                <button onClick={logout} className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition bg-red-500/90 text-white border border-red-500/90 hover:bg-red-600">
+                    <LogOut size={16} /> Logout
+                </button>
+            ) : (
+                <div className="flex items-center gap-2">
+                    <Link to="/login" className="px-4 py-2 rounded-md text-sm font-semibold transition bg-white/90 text-gray-800 hover:bg-white">Login</Link>
+                    <Link to="/register" className="px-4 py-2 rounded-md text-sm font-semibold transition bg-purple-600 text-white border border-purple-600 hover:bg-purple-700">Sign Up</Link>
+                </div>
+            )}
+        </div>
       </section>
 
-      {/* The only change is z-20 to z-50 right here 👇 */}
       <header className={`shadow-md p-4 flex items-center justify-center relative sticky top-0 z-50 ${theme === 'light' ? 'bg-white' : 'dark bg-gray-800'}`}>
         <nav className="flex items-center space-x-1 md:space-x-2 flex-wrap justify-center">
             <NavLink to="/" className={navLinkClass}><Map size={16} /> <span className="hidden md:inline">Planner</span></NavLink>
             <NavLink to="/history" className={navLinkClass}><HistoryIcon size={16} /> <span className="hidden md:inline">History</span></NavLink>
+            <NavLink to="/advisories" className={navLinkClass}><Megaphone size={16} /> <span className="hidden md:inline">Advisories</span></NavLink>
             <NavLink to="/landmarks" className={navLinkClass}><Compass size={16} /> <span className="hidden md:inline">Landmarks</span></NavLink>
-            <NavLink to="/station-info" className={navLinkClass}><Info size={16} /> <span className="hidden md:inline">Stations</span></NavLink>
             <NavLink to="/connections" className={navLinkClass}><Route size={16} /> <span className="hidden md:inline">Connections</span></NavLink>
             <NavLink to="/accessibility" className={navLinkClass}><HelpingHand size={16} /> <span className="hidden md:inline">Accessibility</span></NavLink>
             <NavLink to="/live-map" className={navLinkClass}><Tv size={16} /> <span className="hidden md:inline">Live Map</span></NavLink>

@@ -13,27 +13,28 @@ import Emergency from './pages/Emergency.jsx';
 import Settings from './pages/Settings.jsx';
 import Accessibility from './pages/Accessibility.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 
 function ProtectedRoute({ children }) {
   const { appStarted } = useAppContext();
   return appStarted ? children : <Navigate to="/welcome" />;
 }
 
-/**
- * The main App component that sets up all the application's routes.
- */
 function App() {
   const { appStarted } = useAppContext();
 
   return (
     <Router>
       <Routes>
-        {/* Route #1: The Welcome Page */}
-        {/* Everyone starts here. */}
+        {/* --- Public Routes --- */}
+        {/* These pages are accessible to everyone and do not use the main layout */}
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* Route #2: The Main Application Layout */}
-        {/* This route is protected. It contains all the other pages. */}
+        {/* --- Protected Routes --- */}
+        {/* These pages are only accessible after the initial setup and use the main Layout */}
         <Route 
           path="/" 
           element={
@@ -42,7 +43,6 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* These are the pages inside the main layout */}
           <Route index element={<Planner />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="landmarks" element={<Landmarks />} />
@@ -54,8 +54,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-        {/* Route #3: The Fallback Route */}
-        {/* If a user types a random URL, this redirects them to the correct starting page. */}
+        {/* --- Fallback Route --- */}
         <Route path="*" element={<Navigate to={appStarted ? "/" : "/welcome"} />} />
       </Routes>
     </Router>

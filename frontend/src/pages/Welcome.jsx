@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
-import { useNavigate } from 'react-router-dom';
-import WelcomeWeather from '../components/WelcomeWeather'; // Import the new widget
+import { Link, useNavigate } from 'react-router-dom';
+import WelcomeWeather from '../components/WelcomeWeather';
 
 export default function Welcome() {
   const { handleUserTypeSelect } = useAppContext();
@@ -43,7 +43,6 @@ export default function Welcome() {
           Please select your passenger type to begin.
         </motion.p>
         
-        {/* Weather Widget goes here */}
         <WelcomeWeather />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
@@ -64,6 +63,17 @@ export default function Welcome() {
             <span className="text-sm font-normal normal-case tracking-normal text-center px-4">Enhanced accessibility options.</span>
           </motion.button>
         </div>
+        
+        {/* NEW: Login/Register links for returning users */}
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0 }}
+            className="mt-12 text-gray-300"
+        >
+            Already have an account? <Link to="/login" className="font-semibold text-purple-400 hover:underline">Login here</Link> or <Link to="/register" className="font-semibold text-purple-400 hover:underline">Create a new one</Link>.
+        </motion.div>
+
       </div>
     </div>
   );

@@ -1,0 +1,19 @@
+# C:\Tren-PH\docker-compose.yml
+
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    container_name: trenph-db
+    restart: always
+    environment:
+      POSTGRES_USER: trenph_user
+      POSTGRES_PASSWORD: trenph_password
+      POSTGRES_DB: trenph
+    ports:
+      - "5433:5432" # <-- Change this line
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
