@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Megaphone, Wrench, Info } from 'lucide-react';
+import { Megaphone, Wrench, Info, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 const getIconForType = (type) => {
     switch(type) {
@@ -16,14 +16,30 @@ const getIconForType = (type) => {
 export default function Advisories() {
   const [advisories, setAdvisories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAdvisories = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await axios.get('/api/advisories');
+        // 1. Get the token from local storage
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authentication token found. Please log in.');
+        }
+
+        // 2. Make the secure API call with the Authorization header
+        const response = await axios.get('/api/advisories', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
         setAdvisories(response.data);
-      } catch (error) {
-        console.error("Failed to fetch advisories:", error);
+      } catch (err) {
+        console.error("Failed to fetch advisories:", err);
+        setError(err.message || 'Could not load advisories.');
       } finally {
         setLoading(false);
       }
@@ -34,6 +50,10 @@ export default function Advisories() {
 
   if (loading) {
     return <div className="text-center p-8">Loading Advisories...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center p-10 text-red-500 flex items-center justify-center gap-2"><AlertCircle/> {error}</div>;
   }
 
   return (

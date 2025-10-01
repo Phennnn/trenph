@@ -9,11 +9,11 @@ import MapView from '../components/MapView';
 import MapLegend from '../components/MapLegend';
 import WeatherWidget from '../components/WeatherWidget';
 import LiveClock from '../components/LiveClock';
-import SearchableSelect from '../components/SearchableSelect'; // Import the new component
+import SearchableSelect from '../components/SearchableSelect';
 
 export default function Planner() {
   const transitData = useTransitData();
-  const { userType, setUserType } = useAppContext();
+  const { userType, setUserType, token } = useAppContext();
   
   const [tripType, setTripType] = useState('stationToStation');
   const [startLine, setStartLine] = useState('LRT-1');
@@ -25,25 +25,10 @@ export default function Planner() {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const lineOptions = React.useMemo(() => 
-    Object.keys(transitData?.stations || {}).map(line => ({ value: line, label: transitData.stations[line].name })),
-    [transitData?.stations]
-  );
-
-  const startStationOptions = React.useMemo(() => 
-    (transitData?.stations?.[startLine]?.stations || []).map(station => ({ value: station, label: station })),
-    [transitData?.stations, startLine]
-  );
-  
-  const destinationStationOptions = React.useMemo(() => 
-    (transitData?.stations?.[destinationLine]?.stations || []).map(station => ({ value: station, label: station })),
-    [transitData?.stations, destinationLine]
-  );
-  
-  const landmarkOptions = React.useMemo(() => 
-    (transitData?.landmarks || []).map(landmark => ({ value: landmark.name, label: landmark.name })),
-    [transitData?.landmarks]
-  );
+  const lineOptions = React.useMemo(() => Object.keys(transitData?.stations || {}).map(line => ({ value: line, label: transitData.stations[line].name })), [transitData?.stations]);
+  const startStationOptions = React.useMemo(() => (transitData?.stations?.[startLine]?.stations || []).map(station => ({ value: station, label: station })), [transitData?.stations, startLine]);
+  const destinationStationOptions = React.useMemo(() => (transitData?.stations?.[destinationLine]?.stations || []).map(station => ({ value: station, label: station })), [transitData?.stations, destinationLine]);
+  const landmarkOptions = React.useMemo(() => (transitData?.landmarks || []).map(landmark => ({ value: landmark.name, label: landmark.name })), [transitData?.landmarks]);
 
   useEffect(() => {
     if (transitData?.stations?.['LRT-1']?.stations.length) {
@@ -54,6 +39,17 @@ export default function Planner() {
       setDestinationLandmark(transitData.landmarks[0].name);
     }
   }, [transitData]);
+
+  const saveTrip = async (tripData) => {
+    if (!token) return;
+    try {
+      const config = { headers: { 'x-auth-token': token } };
+      await axios.post('/api/trips', tripData, config);
+      console.log("Trip saved successfully!");
+    } catch (error) {
+      console.error("Failed to save trip:", error);
+    }
+  };
 
   const handleReverseRoute = () => {
       if (tripType !== 'stationToStation') return;
@@ -108,24 +104,29 @@ export default function Planner() {
           const destL = destinationLine;
           const destS = destinationStation;
 
-          try {
-            const response = await axios.post('/api/predict', {
-                start_line: startL, start_station: startS, end_line: destL, end_station: destS,
-                hour_of_day: new Date().getHours(),
-                day_of_week: new Date().getDay(),
-                is_holiday: 0,
-            });
-            setPrediction(response.data);
-          } catch (error) {
-            console.error("Prediction API error:", error);
-            setPrediction({ weather: "Error", travelTime: "N/A" });
-          }
+          const response = await axios.post('/api/predict', {
+              start_line: startL, start_station: startS, end_line: destL, end_station: destS,
+              hour_of_day: new Date().getHours(),
+              day_of_week: new Date().getDay(),
+              is_holiday: 0,
+          });
+          setPrediction(response.data);
 
           if (startL === destL) {
               const stationsTraveled = Math.abs(transitData.stations[startL].stations.indexOf(startS) - transitData.stations[startL].stations.indexOf(destS));
               const fare = calculateFare(stationsTraveled);
               const route = getRouteString(startL, startS, destS);
               setRouteInfo({ route: `(${transitData.stations[startL].name}) ${route}`, fare: fare });
+              
+              // Save trip with distance
+              saveTrip({
+                  origin: startS,
+                  destination: destS,
+                  mode: transitData.stations[startL].name,
+                  duration: parseInt(response.data.travelTime) || 0,
+                  cost: fare,
+                  distance: parseFloat(response.data.distance_km) || 0,
+              });
           } else {
             const startInterchanges = transitData.interchanges[startL];
             let bestRoute = null;
@@ -145,6 +146,7 @@ export default function Planner() {
             if (bestRoute) {
                 const fullRoute = `(${transitData.stations[startL].name}) ${getRouteString(startL, startS, bestRoute.interchange)} \n➡️ TRANSFER AT ${bestRoute.interchange}/${bestRoute.connection} ➡️\n (${transitData.stations[destL].name}) ${getRouteString(destL, bestRoute.connection, destS)}`;
                 setRouteInfo({ route: fullRoute, fare: bestRoute.leg1_fare + bestRoute.leg2_fare });
+                // You could expand saveTrip to handle multi-leg journeys as well
             } else {
                 setRouteInfo({ route: "No direct transfer route found.", fare: "N/A" });
             }

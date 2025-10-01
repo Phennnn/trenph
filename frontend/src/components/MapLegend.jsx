@@ -1,32 +1,32 @@
 import React from 'react';
-import { useTransitData } from '@/context/DataContext';
-import { FaLandmark } from 'react-icons/fa';
+import { FaLandmark } from 'react-icons/fa'; // Assuming you use react-icons
 
-export default function MapLegend() {
-  const { stations, lineColors } = useTransitData();
+// This component now receives its data as props.
+// The `useTransitData` hook has been completely removed.
+export default function MapLegend({ stationsData, landmarksData }) {
+  // We can derive the line names directly from the stationsData prop
+  const lines = stationsData ? Object.keys(stationsData) : [];
 
-  if (!stations || !lineColors) {
-    return null; // Don't render if data isn't available yet
-  }
+  const lineColors = {
+    'LRT Line 1': 'bg-yellow-400',
+    'LRT Line 2': 'bg-purple-600',
+    'MRT Line 3': 'bg-blue-500',
+    'PNR Metro Commuter Line': 'bg-orange-500',
+  };
 
   return (
-    <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-3 rounded-lg shadow-lg z-[1000]">
-      <h4 className="font-bold mb-2 text-sm text-gray-800">Legend</h4>
+    <div className="bg-white/80 backdrop-blur-sm p-3 rounded-lg shadow-md border">
+      <h3 className="font-bold mb-2 text-sm">Legend</h3>
       <ul className="space-y-1">
-        {Object.entries(lineColors).map(([line, color]) => (
-          <li key={line} className="flex items-center text-xs text-gray-700">
-            <span 
-              className="w-3 h-3 inline-block rounded-full mr-2" 
-              style={{ backgroundColor: color }}
-            ></span>
-            {stations[line]?.name || line}
+        {lines.map(line => (
+          <li key={line} className="flex items-center gap-2">
+            <span className={`w-3 h-3 rounded-full ${lineColors[line] || 'bg-gray-400'}`}></span>
+            <span className="text-xs">{line}</span>
           </li>
         ))}
-        <li key="landmark" className="flex items-center text-xs text-gray-700">
-          <span className="inline-block mr-2 text-gray-600">
-            <FaLandmark />
-          </span>
-          Landmark
+        <li className="flex items-center gap-2">
+          <FaLandmark className="text-gray-600" />
+          <span className="text-xs">Landmark</span>
         </li>
       </ul>
     </div>

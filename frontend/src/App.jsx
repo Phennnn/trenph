@@ -15,6 +15,7 @@ import Accessibility from './pages/Accessibility.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import Advisories from './pages/Advisories.jsx';
 
 function ProtectedRoute({ children }) {
   const { appStarted } = useAppContext();
@@ -52,6 +53,7 @@ function App() {
           <Route path="live-map" element={<LiveMap />} />
           <Route path="emergency" element={<Emergency />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="advisories" element={<Advisories />} />
         </Route>
 
         {/* --- Fallback Route --- */}
